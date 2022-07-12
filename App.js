@@ -1,12 +1,24 @@
+import React, {useEffect} from 'react';
+import { Provider } from 'react-redux';
+import { configureStore } from "./Store/Store";
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import SelectRoute from './SelectRoute';
+import { LogBox } from "react-native";
+import FlashMessage from "react-native-flash-message";
 
 export default function App() {
+  console.log("aqui wama")
+  useEffect(() => {
+    LogBox.ignoreAllLogs()
+  }, [])
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider store={configureStore()}>  
+      <SelectRoute />      
+      <StatusBar translucent={false} backgroundColor="#ffffff" />
+      <FlashMessage />
+    </Provider>
   );
 }
 
