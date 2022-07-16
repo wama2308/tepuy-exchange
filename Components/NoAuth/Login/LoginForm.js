@@ -4,6 +4,7 @@ import { stateInitial } from './StateInitial';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 import AntDesign from '@expo/vector-icons/Ionicons';
 import { Input, Icon } from '@rneui/themed';
+import { logoutAction } from '../../../Actions/UsersActions';
 
 const LoginForm = (props) => {    
     const initialFormState = stateInitial;
@@ -24,7 +25,7 @@ const LoginForm = (props) => {
             setDataForm(prev => ({
                 ...prev,
                 email_error: 'red',
-                email_text_error: props.language.t('messageErrorEmailRequired'),
+                email_text_error: 'El correo es requerido',
             }))
             acum = 1;
         }
@@ -32,7 +33,7 @@ const LoginForm = (props) => {
             setDataForm(prev => ({
                 ...prev,
                 email_error: 'red',
-                email_text_error: props.language.t('messageErrorEmailInvalid'),
+                email_text_error: 'Correo inválido',
             }))
             acum = 1;
         }
@@ -40,7 +41,7 @@ const LoginForm = (props) => {
             setDataForm(prev => ({
                 ...prev,
                 password_error: 'red',
-                password_text_error: props.language.t('messageErrorPasswordRequired'),
+                password_text_error: 'La contraseña es requerida',
             }))
             acum = 1;
         }
@@ -62,7 +63,7 @@ const LoginForm = (props) => {
                 ...prev,
                 loading: true
             }))
-            props.loginAction(dataSend, props.locale)
+            props.loginAction(dataSend)
         }
     }
 
@@ -111,7 +112,7 @@ const LoginForm = (props) => {
             <View style={{ alignItems: 'flex-end' }}>
                 <Text
                     style={{ color: '#174ea6' }}
-                    onPress={() => { props.navigation.navigate('ForgotPassword') }}
+                    onPress={() => { props.navigation.navigate('Recuperar contraseña') }}                    
                 >
                     ¿Olvido su contraseña?
                 </Text>
@@ -119,7 +120,7 @@ const LoginForm = (props) => {
             <Text></Text>
             <Button
                 title='Iniciar Sesión'
-            // onPress={handleLoginAction}
+                 onPress={handleLoginAction}
             />
             <Text></Text>
             <Button

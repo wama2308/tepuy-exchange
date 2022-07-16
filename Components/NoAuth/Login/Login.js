@@ -1,23 +1,33 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { connect } from 'react-redux';
+import { loginAction } from '../../../Actions/UsersActions';
 import LoginForm from './LoginForm';
 
-export default function Login(props) {    
+function Login(props) {
     const { navigation, screenProps } = props;
     return (
-        <View style={{ flex: 1 }}>
-            <View style={styles.container}>
-                <View style={styles.image}>
-                    <Image
-                        source={require('../../../assets/tepuy.png')}
-                        style={{ width: 200, height: 200, borderRadius: 10 }}
-                    />
+        <ScrollView >
+            <KeyboardAvoidingView behavior='height' keyboardVerticalOffset={-100}>
+                <View style={{ flex: 1 }}>
+                    <View style={styles.container}>
+                        <View style={styles.image}>
+                            <Image
+                                source={require('../../../assets/tepuy.png')}
+                                style={{ width: 200, height: 200, borderRadius: 10 }}
+                            />
+                        </View>
+                        <View style={styles.containerForm}>
+                            <LoginForm
+                                loginAction={props.loginAction}
+                                navigation={navigation}
+                            />
+                        </View>
+                    </View>
                 </View>
-                <View style={styles.containerForm}>
-                    <LoginForm navigation={navigation} />
-                </View>
-            </View>
-        </View>
+            </KeyboardAvoidingView>
+
+        </ScrollView>
     );
 }
 
@@ -43,3 +53,9 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     },
 });
+
+const mapDispatchToProps = dispatch => ({
+    loginAction: (data) => dispatch(loginAction(data)),
+});
+
+export default connect(null, mapDispatchToProps)(Login);

@@ -63,6 +63,14 @@ const RegisterForm = (props) => {
             }))
             acum = 1;
         }
+        if (dataForm.type_person === '') {
+            setDataForm(prev => ({
+                ...prev,
+                type_person_error: 'red',
+                type_person_text_error: 'Debe seleccionar el tipo de persona',
+            }))
+            acum = 1;
+        }
         if (dataForm.password === '') {
             setDataForm(prev => ({
                 ...prev,
@@ -114,12 +122,13 @@ const RegisterForm = (props) => {
         e.preventDefault();
         const isValid = validate();
         if (isValid) {
-            dataSend = {
+            let dataSend = {
                 names: dataForm.name,
                 surnames: dataForm.surname,
                 email: dataForm.email,
                 code_phone: dataForm.code_phone,
                 phone: dataForm.phone,
+                type_person: dataForm.type_person,
                 password: dataForm.password,
             }
             setDataForm(prev => ({
@@ -129,8 +138,7 @@ const RegisterForm = (props) => {
             props.registerFireBaseUser(dataSend)
                 .then(() => {
                     flashMessageAction('Usuario registrado con éxito', 'success');
-                    props.navigation.goBack();
-                    // setDataForm(prev => ({ ...prev, loading: false }))
+                    props.navigation.goBack();                    
                 })
                 .catch(() => {
                     flashMessageAction('Error registrando el usuario', 'warning');
@@ -142,7 +150,7 @@ const RegisterForm = (props) => {
     return (
         !dataForm.loading ?
             <ScrollView style={styles.container}>
-                <KeyboardAvoidingView behavior='height' keyboardVerticalOffset={30}>
+                <KeyboardAvoidingView behavior='height' keyboardVerticalOffset={-200}>
                     <View style={styles.texInput}>
                         <Input
                             placeholder='Nombres'
@@ -179,7 +187,6 @@ const RegisterForm = (props) => {
                                 onValueChange={(itemValue, itemIndex) => setDataForm(prev => ({ ...prev, code_phone: itemValue }))}
                             >
                                 <Picker.Item label="+51" value="+51" />
-                                {/* <Picker.Item label="+51" value="+51" /> */}
                             </Picker>
                         </View>
                         <View style={{ flex: 1 }}>
@@ -192,6 +199,34 @@ const RegisterForm = (props) => {
                                 inputContainerStyle={{ borderColor: dataForm.phone_error }}
                                 errorMessage={dataForm.phone_text_error}
                             />
+                        </View>
+                    </View>
+                    <View style={
+                        {
+                            ...styles.viewPickerTypePerson,
+                            borderBottomColor: dataForm.type_person_error,
+                            marginBottom: dataForm.type_person_error === 'red' ? 25 : 20
+                        }
+                    }>
+                        <Picker
+                            style={
+                                (styles.placeholder)}
+                            selectedValue={dataForm.type_person}
+                            onValueChange={(itemValue, itemIndex) =>
+                                setDataForm(prev => ({
+                                    ...prev,
+                                    type_person: itemValue,
+                                    type_person_error: 'black',
+                                    type_person_text_error: ''
+                                }))
+                            }
+                        >
+                            <Picker.Item style={{ color: 'gray' }} label="Tipo de persona" value="" enabled={false} />
+                            <Picker.Item label="Natural" value="natural" />
+                            <Picker.Item label="Juridica" value="juridica" />
+                        </Picker>
+                        <View style={{ marginTop: -7, marginBottom: 5 }}>
+                            <Text style={{ color: 'red', fontSize: 12 }}>{dataForm.type_person_text_error}</Text>
                         </View>
                     </View>
                     <View style={styles.texInput}>
@@ -265,6 +300,13 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.8,
         alignContent: 'center',
         marginHorizontal: 10,
+    },
+    viewPickerTypePerson: {
+        height: 41,
+        borderBottomWidth: 0.8,
+        alignContent: 'center',
+        marginHorizontal: 10,
+        marginBottom: 15
     },
     viewLoading: {
         flex: 1,
