@@ -1,13 +1,25 @@
-import * as React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import RegisterForm from './RegisterForm';
-import { registerFireBaseUser } from '../../../Actions/UsersActions';
+import { registerFireBaseUser, verifyuser, searchUsersBusiness } from '../../../Actions/UsersActions';
 
 export default function Register(props) {
   const { navigation, screenProps } = props;
+  const [businessSelect, setBusinessSelect] = useState(null)
+  useEffect(() => {
+    searchUsersBusiness()
+      .then((res) => {        
+        setBusinessSelect(res)
+      });
+  }, [])
   return (
     <View style={styles.container}>
-      <RegisterForm navigation={navigation} registerFireBaseUser={registerFireBaseUser} />
+      <RegisterForm
+        navigation={navigation}
+        registerFireBaseUser={registerFireBaseUser}
+        verifyuser={verifyuser}
+        businessSelect={businessSelect}
+      />
     </View>
   );
 }

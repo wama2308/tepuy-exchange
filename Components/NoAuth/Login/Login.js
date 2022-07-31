@@ -7,7 +7,7 @@ import LoginForm from './LoginForm';
 function Login(props) {
     const { navigation, screenProps } = props;
     return (
-        <ScrollView >
+        <ScrollView style={{ backgroundColor: '#fff' }}>
             <KeyboardAvoidingView behavior='height' keyboardVerticalOffset={-100}>
                 <View style={{ flex: 1 }}>
                     <View style={styles.container}>

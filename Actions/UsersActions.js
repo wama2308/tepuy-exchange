@@ -1,27 +1,17 @@
 import { flashMessageAction } from "../Helpers/Herlpers";
-import { firebaseConfig } from "../Firebase/Firebase";
-import { initializeApp } from "firebase/app";
-import {
-    initializeAuth,
-    getReactNativePersistence,
+import { auth, database } from "../Firebase/Firebase";
+import {    
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
-    sendPasswordResetEmail
+    sendPasswordResetEmail,
+    sendEmailVerification
 } from 'firebase/auth/react-native';
-import { getDatabase, ref, set } from "firebase/database";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ref, set, onValue } from "firebase/database";
 import { dateNow } from '../Helpers/Herlpers';
 
-const app = initializeApp(firebaseConfig);
 
-const auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage)
-});
-
-const database = getDatabase(app);
 
 export const registerFireBaseUser = (data) => {
     return new Promise((resolve, reject) => {
@@ -34,7 +24,10 @@ export const registerFireBaseUser = (data) => {
                     email: data.email,
                     code_phone: data.code_phone,
                     phone: data.phone,
-                    type_person: data.type_person,
+                    type_user: data.type_person,
+                    referred: data.referred,
+                    business: data.business,
+                    active: true,
                     created_at: dateNow(),
                     created_by: user.uid,
                     updated_at: dateNow(),
@@ -56,22 +49,25 @@ export const loginAction = (data) => dispatch => {
     });
     signInWithEmailAndPassword(auth, data.email, data.password)
         .then((userCredential) => {
-            // Signed in
-            console.log("userCredential ", userCredential)
             const user = userCredential.user;
             console.log("user ", user)
-            if (user) {
+            if (user && user.emailVerified) {
                 dispatch({
                     type: "CHECK_CONNECTION",
                     payload: user
                 });
+            } else if (user && !user.emailVerified) {
+                flashMessageAction('¡Su email no ha sido verificado, por favor revise su bandeja de entrada o spam para verificar su cuenta!', 'warning');
+                dispatch({
+                    type: "ERROR_LOGIN",
+                    payload: { uid: '' }
+                });
+            } else {
+                dispatch({
+                    type: "ERROR_LOGIN",
+                    payload: { uid: '' }
+                });
             }
-            // else {
-            //     dispatch({
-            //         type: "ERROR_LOGIN",
-            //         payload: { uid: '' }
-            //     });
-            // }
         })
         .catch(error => {
             dispatch({
@@ -94,23 +90,22 @@ export const loginAction = (data) => dispatch => {
 }
 
 export const logoutAction = () => {
-    console.log("logoutAction")
     signOut(auth)
         .then(() => {
-            console.log("cerro sesion")
             dispatch({
                 type: "CLOSE_CONNECTION",
                 payload: { uid: '' }
             });
         })
         .catch(() => {
-            console.log("no cerro sesion")
+            console.log("no se pudo cerrar la sesion")
         });
 }
 
 export const authentication = () => dispatch => {
     onAuthStateChanged(auth, (user) => {
-        if (user) {
+        //console.log("authentication ", user)
+        if (user && user.emailVerified) {
             dispatch({
                 type: "CHECK_CONNECTION",
                 payload: user
@@ -127,12 +122,12 @@ export const authentication = () => dispatch => {
 
 export const forgotPasswordAction = (email) => {
     return new Promise((resolve, reject) => {
-    sendPasswordResetEmail(auth, email)
-        .then(function () {
-            resolve()
-        }).catch(function (error) {
-            reject(error)            
-        });
+        sendPasswordResetEmail(auth, email)
+            .then(function () {
+                resolve()
+            }).catch(function (error) {
+                reject(error)
+            });
     })
 };
 
@@ -149,4 +144,51 @@ export const closeConnectionFunction = () => dispatch => {
         payload: { uid: '' }
     });
 };
+
+export const verifyuser = () => {
+    return new Promise((resolve, reject) => {
+        sendEmailVerification(auth.currentUser)
+            .then(function () {
+                console.log("Email de verificacion enviado");
+                resolve()
+            }).catch(function (error) {
+                console.log("Error enviando email de verificacion ", error);
+                reject()
+            });
+    });
+}
+
+export const searchUsersBusiness = () => {
+    return new Promise((resolve) => {
+        const usersBusiness = ref(database, 'users');
+        onValue(usersBusiness, (snapshot) => {
+            let arrayBusiness = [];
+            snapshot.forEach((childSnapshot) => {
+                const childKey = childSnapshot.key;
+                const childData = childSnapshot.val();
+                if (childData.type_user === 'juridica' && childData.active) {
+                    arrayBusiness.push(
+                        {
+                            label: `${childData.names} ${childData.surnames}`,
+                            value: childKey
+                        }
+                    )
+                }
+                resolve(arrayBusiness)
+            });
+        });
+    });
+};
+
+export const searchTypeUser = () => {
+    return new Promise((resolve) => {
+        const usersBusiness = ref(database, `users/${auth.currentUser.uid}`);
+        onValue(usersBusiness, (snapshot) => {
+            const data = snapshot.val();
+            // console.log(data)
+            resolve(data)
+        });
+    });
+};
+
 

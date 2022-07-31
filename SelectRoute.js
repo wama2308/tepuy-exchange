@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 
 const SelectRoute = (props) => {
-    console.log("props ", props)
     useEffect(() => {
         props.authentication();
     }, [])
@@ -57,7 +56,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    authentication: () => dispatch(authentication()), logoutAction,
+    authentication: () => dispatch(authentication()),
     logoutAction: () => dispatch(logoutAction())
 });
 

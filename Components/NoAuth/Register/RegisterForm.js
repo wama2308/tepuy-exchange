@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Button, KeyboardAvoidingView, ScrollView, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Input } from '@rneui/themed';
@@ -10,6 +10,15 @@ import { flashMessageAction } from '../../../Helpers/Herlpers';
 const RegisterForm = (props) => {
     const initialFormState = stateInitial;
     const [dataForm, setDataForm] = useState(initialFormState)
+
+    useEffect(() => {
+        if (props.businessSelect) {
+            setDataForm(prev => ({
+                ...prev,
+                loading: false
+            }))
+        }
+    }, [props.businessSelect])
 
     const handleChange = (e, name, error, text_error) => {
         setDataForm(prev => ({
@@ -71,6 +80,22 @@ const RegisterForm = (props) => {
             }))
             acum = 1;
         }
+        if (dataForm.referred === '') {
+            setDataForm(prev => ({
+                ...prev,
+                referred_error: 'red',
+                referred_text_error: 'Debe seleccionar si es referido o no',
+            }))
+            acum = 1;
+        }
+        if (dataForm.referred === 'si' && dataForm.business === '') {
+            setDataForm(prev => ({
+                ...prev,
+                business_error: 'red',
+                business_text_error: 'Debe seleccionar quien lo refirio',
+            }))
+            acum = 1;
+        }
         if (dataForm.password === '') {
             setDataForm(prev => ({
                 ...prev,
@@ -129,6 +154,8 @@ const RegisterForm = (props) => {
                 code_phone: dataForm.code_phone,
                 phone: dataForm.phone,
                 type_person: dataForm.type_person,
+                referred: dataForm.referred,
+                business: dataForm.business,
                 password: dataForm.password,
             }
             setDataForm(prev => ({
@@ -137,11 +164,22 @@ const RegisterForm = (props) => {
             }))
             props.registerFireBaseUser(dataSend)
                 .then(() => {
-                    flashMessageAction('Usuario registrado con éxito', 'success');
-                    props.navigation.goBack();                    
+                    props.verifyuser()
+                        .then(() => {
+                            flashMessageAction('Usuario registrado exitosamente, revise la bandeja de entrada de su correo para la verificación', 'success');
+                            props.navigation.goBack();
+                        })
+                        .catch(() => {
+                            flashMessageAction('Error enviando el email de verificación', 'warning');
+                            setDataForm(prev => ({ ...prev, loading: false }))
+                        })
                 })
-                .catch(() => {
-                    flashMessageAction('Error registrando el usuario', 'warning');
+                .catch((error) => {
+                    if (error.code === 'auth/email-already-in-use') {
+                        flashMessageAction('Este email ya se encuentra registrado', 'warning');
+                    } else {
+                        flashMessageAction('Error registrando el usuario', 'warning');
+                    }
                     setDataForm(prev => ({ ...prev, loading: false }))
                 })
         }
@@ -150,7 +188,7 @@ const RegisterForm = (props) => {
     return (
         !dataForm.loading ?
             <ScrollView style={styles.container}>
-                <KeyboardAvoidingView behavior='height' keyboardVerticalOffset={-200}>
+                <KeyboardAvoidingView behavior='height' keyboardVerticalOffset={-250}>
                     <View style={styles.texInput}>
                         <Input
                             placeholder='Nombres'
@@ -209,8 +247,6 @@ const RegisterForm = (props) => {
                         }
                     }>
                         <Picker
-                            style={
-                                (styles.placeholder)}
                             selectedValue={dataForm.type_person}
                             onValueChange={(itemValue, itemIndex) =>
                                 setDataForm(prev => ({
@@ -229,6 +265,71 @@ const RegisterForm = (props) => {
                             <Text style={{ color: 'red', fontSize: 12 }}>{dataForm.type_person_text_error}</Text>
                         </View>
                     </View>
+                    <View style={
+                        {
+                            ...styles.viewPickerTypePerson,
+                            borderBottomColor: dataForm.referred_error,
+                            marginBottom: dataForm.referred_error === 'red' ? 25 : 20
+                        }
+                    }>
+                        <Picker
+                            selectedValue={dataForm.referred}
+                            onValueChange={(itemValue, itemIndex) =>
+                                setDataForm(prev => ({
+                                    ...prev,
+                                    referred: itemValue,
+                                    referred_error: 'black',
+                                    referred_text_error: '',
+                                    business: itemValue === 'no' ? '' : dataForm.business,
+                                    business_error: itemValue === 'no' ? 'black' : dataForm.business_error,
+                                    business_text_error: itemValue === 'no' ? '' : dataForm.business_text_error,
+                                }))
+                            }
+                        >
+                            <Picker.Item style={{ color: 'gray' }} label="Referido" value="" enabled={false} />
+                            <Picker.Item label="Si" value="si" />
+                            <Picker.Item label="No" value="no" />
+                        </Picker>
+                        <View style={{ marginTop: -7, marginBottom: 5 }}>
+                            <Text style={{ color: 'red', fontSize: 12 }}>{dataForm.referred_text_error}</Text>
+                        </View>
+                    </View>
+                    {
+                        dataForm.referred === 'si' ?
+                            <View style={
+                                {
+                                    ...styles.viewPickerTypePerson,
+                                    borderBottomColor: dataForm.business_error,
+                                    marginBottom: dataForm.business_error === 'red' ? 25 : 20
+                                }
+                            }>
+                                <Picker
+                                    selectedValue={dataForm.business}
+                                    onValueChange={(itemValue, itemIndex) =>
+                                        setDataForm(prev => ({
+                                            ...prev,
+                                            business: itemValue,
+                                            business_error: 'black',
+                                            business_text_error: ''
+                                        }))
+                                    }
+                                >
+                                    <Picker.Item style={{ color: 'gray' }} label="¿Por quien fue referido?" value="" enabled={false} />
+                                    {
+                                        props.businessSelect && props.businessSelect.map((data, key) => {
+                                            return (
+                                                <Picker.Item key={key} label={data.label} value={data.value} />
+                                            )
+                                        })
+                                    }
+                                </Picker>
+                                <View style={{ marginTop: -7, marginBottom: 5 }}>
+                                    <Text style={{ color: 'red', fontSize: 12 }}>{dataForm.business_text_error}</Text>
+                                </View>
+                            </View>
+                            :
+                            null
+                    }
                     <View style={styles.texInput}>
                         <Input
                             placeholder="Contraseña"
@@ -267,10 +368,12 @@ const RegisterForm = (props) => {
                             }
                         />
                     </View>
-                    <Button
-                        title='Registrarse'
-                        onPress={saveUserAction}
-                    />
+                    <View style={{ marginTop: 20 }}>
+                        <Button
+                            title='Registrarse'
+                            onPress={saveUserAction}
+                        />
+                    </View>
                     <Text></Text>
                 </KeyboardAvoidingView>
 
