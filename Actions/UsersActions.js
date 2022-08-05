@@ -1,12 +1,15 @@
 import { flashMessageAction } from "../Helpers/Herlpers";
 import { auth, database } from "../Firebase/Firebase";
-import {    
+import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
     sendPasswordResetEmail,
-    sendEmailVerification
+    sendEmailVerification,
+    EmailAuthProvider,
+    updatePassword,
+    reauthenticateWithCredential,
 } from 'firebase/auth/react-native';
 import { ref, set, onValue } from "firebase/database";
 import { dateNow } from '../Helpers/Herlpers';
@@ -89,7 +92,11 @@ export const loginAction = (data) => dispatch => {
         });
 }
 
-export const logoutAction = () => {
+export const logoutAction = () => dispatch => {
+    dispatch({
+        type: "LOADING_TRUE_LOGIN",
+        payload: null
+    });
     signOut(auth)
         .then(() => {
             dispatch({
@@ -180,15 +187,58 @@ export const searchUsersBusiness = () => {
     });
 };
 
-export const searchTypeUser = () => {
+export const searchTypeUser = () => dispatch => {
     return new Promise((resolve) => {
         const usersBusiness = ref(database, `users/${auth.currentUser.uid}`);
         onValue(usersBusiness, (snapshot) => {
             const data = snapshot.val();
-            // console.log(data)
-            resolve(data)
+            if (Object.keys(data).length) {
+                resolve(data)
+                dispatch({
+                    type: "INFO_ACOUNT_USER",
+                    payload: data
+                });
+            }
         });
     });
 };
+
+const reauthenticate = (currentPassword) => {
+    return new Promise((resolve, reject) => {
+        let credential = EmailAuthProvider.credential(
+            auth.currentUser.email,
+            currentPassword
+        );
+        reauthenticateWithCredential(auth.currentUser, credential)
+            .then(result => {
+                resolve(result)
+            })
+            .catch(error => {
+                reject(error.code)
+            })
+    })
+}
+
+export const changePasswordUserAction = (data) => {
+    return new Promise((resolve, reject) => {
+        reauthenticate(data.currentPassword)
+            .then((res) => {
+                updatePassword(auth.currentUser, data.password)
+                    .then(() => {
+                        resolve()
+                    }).catch(() => {
+                        flashMessageAction('Error cambiando la contraseña', 'warning');
+                    });
+            })
+            .catch((error) => {
+                if (error === 'auth/wrong-password') {
+                    flashMessageAction('Contraseña invalida', 'warning');
+                } else {
+                    flashMessageAction('Error reautenticando al usuario para cambiar la contraseña', 'warning');
+                }
+                reject(error)
+            })
+    })
+}
 
 

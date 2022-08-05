@@ -25,7 +25,7 @@ const SelectRoute = (props) => {
                 {
                     props.users && props.users.uid !== '' && (
                         <RouteAuth
-                            logoutAction={logoutAction}
+                            logoutAction={props.logoutAction}
                         />
                     )
                 }

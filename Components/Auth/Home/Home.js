@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
-import { Text, View, Button, ActivityIndicator, StyleSheet } from 'react-native';
+import { Text, View, ActivityIndicator, StyleSheet, SafeAreaView, Image } from 'react-native';
 import { loadRates } from '../../../Actions/RatesActions'
 import { connect } from 'react-redux';
+import { amountConvert, completDecimal, months } from '../../../Helpers/Herlpers'
+import { Card, Paragraph } from 'react-native-paper';
 
 function Home(props) {
   const { navigation, route } = props;
   const { params } = route
+  let dateCurrent = new Date();
 
   useEffect(() => {
     props.loadRates()
@@ -17,22 +20,99 @@ function Home(props) {
         <ActivityIndicator size={80} color='#174ea6' />
       </View>
       :
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text onPress={() => params.logoutAction()}>Home</Text>
-        <Text></Text>
-        <Text></Text>
-        <Text></Text>
-        <Button onPress={() => navigation.navigate('Tasas')} title="epale" />
-      </View>
+      <SafeAreaView style={styles.container}>
+
+        <Card>
+          <Card.Cover
+            style={{ height: 200 }}
+            source={require('../../../assets/tepuy.png')} resizeMode="contain"
+          />
+          <View style={styles.divider}></View>
+
+          <Card.Title
+            title="Tasa del día"
+            subtitle={`${dateCurrent.getDate()} de ${months[dateCurrent.getMonth()]} de ${dateCurrent.getFullYear()}`}
+          />
+          <View style={styles.divider}></View>
+          <Card.Content style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 0 }}>
+              <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
+                Soles
+              </Text>
+            </View>
+            <View style={{ paddingVertical: 10 }}>
+              <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
+                {amountConvert(completDecimal(props.rates.sol))} X 1S
+              </Text>
+            </View>
+            <View style={styles.dividerContent}></View>
+            <View style={{ paddingVertical: 0 }}>
+              <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
+                Dolares
+              </Text>
+            </View>
+            <View style={{ paddingVertical: 10 }}>
+              <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
+                {amountConvert(completDecimal(props.rates.dolar))} X 1$
+              </Text>
+            </View>
+          </Card.Content>
+        </Card>
+      </SafeAreaView>
+    // <View style={styles.container}>
+    //   <Image
+    //     source={require('../../../assets/tepuy.png')}
+    //     style={{ width: 200, height: 200, borderRadius: 10 }}
+    //   />
+    //   <View style={{ marginVertical: 20 }}>
+    //     <Text style={{ fontSize: 35, color: 'sienna' }}>Tasa del día</Text>
+    //   </View>
+    //   <View style={{ marginVertical: 0 }}>
+    //     <Text style={{ fontSize: 25, color: 'sienna' }}>{`${dateCurrent.getDate()} de ${months[dateCurrent.getMonth()]} de ${dateCurrent.getFullYear()}`}</Text>
+    //   </View>
+    //   <View style={styles.divider}></View>
+    //   <View>
+    //     <Text style={{ fontSize: 35, color: 'sienna', fontWeight: 'bold' }}>{amountConvert(completDecimal(props.rates.sol))} X 1S</Text>
+    //   </View>
+    //   <View style={{ marginVertical: 10 }}>
+    //     <Text style={{ fontSize: 35, color: 'sienna', fontWeight: 'bold' }}>{amountConvert(completDecimal(props.rates.dolar))} X 1$</Text>
+    //   </View>
+    //   <View style={styles.divider}></View>
+    // </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    marginHorizontal: 20,
+    marginVertical: 20,
+  },
   viewLoading: {
     flex: 1,
     alignContent: 'center',
     justifyContent: 'center'
-  }
+  },
+  divider: {
+    width: "100%",
+    height: 1,
+    backgroundColor: "lightgray",
+    marginVertical: 10
+  },
+  dividerContent: {
+
+    width: 320,
+    height: 1,
+    backgroundColor: "lightgray",
+    marginHorizontal: -15,
+    marginVertical: 15
+  },
+  // image: {
+  //   justifyContent: 'flex-start',
+  //   alignItems: 'center',
+  //   paddingVertical: 0,
+  // },
 });
 
 

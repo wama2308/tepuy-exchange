@@ -4,10 +4,10 @@
     "slug": "tepuy-exchange",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/tepuy.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/tepuy.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

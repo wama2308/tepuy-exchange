@@ -5,6 +5,7 @@ import Home from './Home/Home';
 import Rate from './Rate/Rate';
 import { searchTypeUser } from '../../Actions/UsersActions'
 import MenuRight from '../MenuRight';
+import { connect } from 'react-redux';
 
 const HomeStack = createNativeStackNavigator();
 
@@ -12,7 +13,7 @@ function HomeStackScreen(props) {
   const [typeUser, setTypeUser] = useState(null)
 
   useEffect(() => {
-    searchTypeUser().then((res) => setTypeUser(res))
+    props.searchTypeUser().then((res) => setTypeUser(res))
   }, [])
 
   const { navigation, route } = props;
@@ -26,8 +27,7 @@ function HomeStackScreen(props) {
       <HomeStack.Navigator>
         <HomeStack.Screen
           name="Home"
-          component={Home}
-          initialParams={{ logoutAction: params.logoutAction }}
+          component={Home}          
           options={{
             headerRight: () => (
               typeUser && typeUser.type_user === 'admin' ?
@@ -53,4 +53,8 @@ const styles = StyleSheet.create({
   }
 });
 
-export default HomeStackScreen;
+const mapDispatchToProps = dispatch => ({
+  searchTypeUser: () => dispatch(searchTypeUser()),
+});
+
+export default connect(null, mapDispatchToProps)(HomeStackScreen);

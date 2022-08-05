@@ -2,15 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { Menu, MenuItem } from 'react-native-material-menu';
 import { SimpleLineIcons } from '@expo/vector-icons';
-import { dataMenuHome } from '../Helpers/Herlpers';
+import { dataMenuHome, dataMenuAccount } from '../Helpers/Herlpers';
 
 export default function MenuRight(props) {
+    
     const [visible, setVisible] = useState(false);
     const [dataMenu, setDataMenu] = useState(null);
 
     const getData = () => {
         const selectData = {
             home: dataMenuHome,
+            account: dataMenuAccount,
         }
         setDataMenu(selectData[props.option])
     }
@@ -42,7 +44,10 @@ export default function MenuRight(props) {
                                 key={key}
                                 onPress={() => {
                                     hideMenu,
-                                        props.navigation.navigate('Tasas')
+                                        menu.route !== 'logout' ?
+                                            props.navigation.navigate(menu.route)
+                                            :
+                                            props.logoutAction()
                                 }}
                             >
                                 {menu.label}

@@ -28,6 +28,21 @@ export const dataMenuHome = [
     }
 ]
 
+export const dataMenuAccount = [
+    {
+        label: 'Cambiar contraseña',
+        route: 'changePassword'
+    },
+    {
+        label: 'Actualizar datos',
+        route: 'updateData'
+    },
+    {
+        label: 'Cerrar sesión',
+        route: 'logout'
+    }
+]
+
 export const formatMonto = (data) => {
     return parseFloat(data.replace(/\./g, '').replace(/\,/g, '.'));
 };
@@ -47,3 +62,23 @@ export const completDecimal = (data) => {
         return data.toString().replace(/\./g, '')
     }
 };
+
+export const months = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+]
+
+export const convertUnixDate = (date) => {
+    let dateConvert = new Date(date*1000);
+    return ('0' + dateConvert.getDate()).slice(-2) + '-' + ('0' + (dateConvert.getMonth()+1)).slice(-2) + '-' + dateConvert.getFullYear();    
+}

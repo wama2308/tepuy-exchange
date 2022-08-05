@@ -1,7 +1,6 @@
 const InitalState = {
     userState: null,
     infoUser: null,
-    test:''
 }
 
 const UsersReducer = (state = InitalState, action) => {
@@ -22,18 +21,6 @@ const UsersReducer = (state = InitalState, action) => {
             return {
                 ...state,
                 infoUser: action.payload
-            };
-        }
-        case 'TEST': {
-            return {
-                ...state,
-                test: action.payload.test
-            };
-        }
-        case 'TEST_NO': {
-            return {
-                ...state,
-                test: action.payload.test
             };
         }
         default:
