@@ -49,6 +49,14 @@ function User(props) {
                             </View>
                             <View style={{ paddingVertical: 5 }}>
                                 <Paragraph style={{ fontWeight: 'bold' }}>
+                                    Tipo
+                                </Paragraph>
+                                <Paragraph style={{ fontWeight: '100' }}>
+                                    {`${props.users.type_user.replace(/^\w/, (c) => c.toUpperCase())}`}
+                                </Paragraph>
+                            </View>
+                            <View style={{ paddingVertical: 5 }}>
+                                <Paragraph style={{ fontWeight: 'bold' }}>
                                     Fecha de registro
                                 </Paragraph>
                                 <Paragraph style={{ fontWeight: '100' }}>

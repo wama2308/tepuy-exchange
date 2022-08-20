@@ -11,7 +11,7 @@ import {
     updatePassword,
     reauthenticateWithCredential,
 } from 'firebase/auth/react-native';
-import { ref, set, onValue } from "firebase/database";
+import { ref, set, onValue, update } from "firebase/database";
 import { dateNow } from '../Helpers/Herlpers';
 
 
@@ -238,6 +238,24 @@ export const changePasswordUserAction = (data) => {
                 }
                 reject(error)
             })
+    })
+}
+
+export const updateUserDataBasic = (data) => {
+    return new Promise((resolve, reject) => {
+        update(ref(database, `users/${auth.currentUser.uid}`),
+            {
+                names: data.names,
+                surnames: data.surnames,
+                code_phone: data.code_phone,
+                phone: data.phone,
+                type_user: data.type_person,
+                updated_at: dateNow(),
+                updated_by: auth.currentUser.uid,
+            }
+        )
+            .then(() => resolve())
+            .catch(() => reject());
     })
 }
 

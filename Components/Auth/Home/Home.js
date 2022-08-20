@@ -12,6 +12,7 @@ function Home(props) {
 
   useEffect(() => {
     props.loadRates()
+    console.log("Home")
   }, [])
 
   return (
@@ -42,7 +43,7 @@ function Home(props) {
             </View>
             <View style={{ paddingVertical: 10 }}>
               <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
-                {amountConvert(completDecimal(props.rates.sol))} X 1S
+                {amountConvert(completDecimal(props.rates.sol))} X 1S/
               </Text>
             </View>
             <View style={styles.dividerContent}></View>
@@ -59,26 +60,6 @@ function Home(props) {
           </Card.Content>
         </Card>
       </SafeAreaView>
-    // <View style={styles.container}>
-    //   <Image
-    //     source={require('../../../assets/tepuy.png')}
-    //     style={{ width: 200, height: 200, borderRadius: 10 }}
-    //   />
-    //   <View style={{ marginVertical: 20 }}>
-    //     <Text style={{ fontSize: 35, color: 'sienna' }}>Tasa del día</Text>
-    //   </View>
-    //   <View style={{ marginVertical: 0 }}>
-    //     <Text style={{ fontSize: 25, color: 'sienna' }}>{`${dateCurrent.getDate()} de ${months[dateCurrent.getMonth()]} de ${dateCurrent.getFullYear()}`}</Text>
-    //   </View>
-    //   <View style={styles.divider}></View>
-    //   <View>
-    //     <Text style={{ fontSize: 35, color: 'sienna', fontWeight: 'bold' }}>{amountConvert(completDecimal(props.rates.sol))} X 1S</Text>
-    //   </View>
-    //   <View style={{ marginVertical: 10 }}>
-    //     <Text style={{ fontSize: 35, color: 'sienna', fontWeight: 'bold' }}>{amountConvert(completDecimal(props.rates.dolar))} X 1$</Text>
-    //   </View>
-    //   <View style={styles.divider}></View>
-    // </View>
   );
 }
 

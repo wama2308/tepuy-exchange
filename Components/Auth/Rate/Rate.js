@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Button, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Button, ActivityIndicator, Text } from 'react-native';
 import { updateRates } from '../../../Actions/RatesActions'
 import { Input } from '@rneui/themed';
 import { formatMonto } from '../../../Helpers/Herlpers'
@@ -88,6 +88,9 @@ function Rate(props) {
     return (
         !state.loading ?
             <View style={styles.container}>
+                <View style={{marginHorizontal:10}}>
+                    <Text>Soles</Text>
+                </View>
                 <Input
                     placeholder='Sol'
                     onChangeText={(e) => handleChange(e, 'sol', 'solError', 'solTextError')}
@@ -98,6 +101,9 @@ function Rate(props) {
                     inputContainerStyle={{ borderColor: state.solError }}
                     errorMessage={state.solTextError}
                 />
+                <View style={{marginHorizontal:10}}>
+                    <Text>Dolares</Text>
+                </View>
                 <Input
                     placeholder='Dolar'
                     onChangeText={(e) => handleChange(e, 'dolar', 'dolarError', 'dolarTextError')}

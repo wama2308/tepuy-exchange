@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeStackScreen from './HomeStackScreen';
-import SendMoney from './SendMoney/SendMoney';
+import SendMoneyContainer from './SendMoney/SendMoneyContainer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import UserStackScreen from './UserStackScreen';
 
@@ -37,7 +37,16 @@ function RouteAuth(props) {
                 headerShown: options(route.name).headerShown,
             })}>
             <Tab.Screen name="StackHome" component={HomeStackScreen} options={{ title: 'Home' }} />
-            <Tab.Screen name="Enviar" component={SendMoney} />
+            <Tab.Screen
+                name="Enviar"
+                component={SendMoneyContainer}
+                listeners={{
+                    tabPress: e => {
+                        // Prevent default action
+                        console.log("aquica")
+                        //e.preventDefault();
+                    },
+                }} />
             <Tab.Screen
                 name="StackAccount"
                 component={UserStackScreen}

@@ -10,7 +10,7 @@ export const flashMessageAction = (message, type) => {
         animated: true,
         animationDuration: 500,
         autoHide: true,
-        duration: 9000,
+        duration: 3000,
         hideOnPress: true,
     })
 };
@@ -55,12 +55,22 @@ export const amountConvert = (data) => {
 };
 
 export const completDecimal = (data) => {
-    let splitAmount = data.toString().split(".")    
-    if (splitAmount[1].length === 1) {
-        return `${splitAmount[0]}${splitAmount[1].padEnd(2, '0')}`
-    }else{
+    if (data.toString().includes(".")) {
+        let splitAmount = data.toString().split(".") 
+        if (splitAmount[1].length === 1) {
+            return `${splitAmount[0]}${splitAmount[1].padEnd(2, '0')}`
+        }
         return data.toString().replace(/\./g, '')
+    } else {
+        return `${data.toString().padEnd(data.toString().length + 2, '0')}`
     }
+
+    // let splitAmount = data.toString().split(".")
+    // if (splitAmount[1] && splitAmount[1].length === 1) {
+
+    // } else {
+
+    // }
 };
 
 export const months = [
@@ -79,6 +89,25 @@ export const months = [
 ]
 
 export const convertUnixDate = (date) => {
-    let dateConvert = new Date(date*1000);
-    return ('0' + dateConvert.getDate()).slice(-2) + '-' + ('0' + (dateConvert.getMonth()+1)).slice(-2) + '-' + dateConvert.getFullYear();    
+    let dateConvert = new Date(date * 1000);
+    return ('0' + dateConvert.getDate()).slice(-2) + '-' + ('0' + (dateConvert.getMonth() + 1)).slice(-2) + '-' + dateConvert.getFullYear();
+}
+
+export const convertCapitalize = (value) => {
+    const publicacion = value;
+    return publicacion[0].toUpperCase() + publicacion.substring(1);
+}
+
+export const symbolCurrency = (value) => {
+    const objectSymbol = {
+        dolar: '$',
+        sol: 'S/'
+    }
+    return objectSymbol[value]
+}
+
+export const dosDecimales = (n) => {
+    let t = n.toString();
+    let regex = /(\d*.\d{0,2})/;
+    return t.match(regex)[0];
 }
