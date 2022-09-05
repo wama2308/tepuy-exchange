@@ -6,17 +6,15 @@ import { useSendMoney } from '../../../Hooks/SendMoney'
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
 import StepThree from './StepThree';
+import { loadLocalStorageSendMoney } from '../../../Helpers/Herlpers'
 
 function SendMoney() {
   const labels = ["Monto a enviar", "Cuenta destino", "Comprobante de pago"];
   const { state, setState } = useSendMoney();
-  
+
   useEffect(() => {
     console.log("SendMoney")
-    setState(prev => ({
-      ...prev,
-      typeCurrency:''
-  }))
+    loadLocalStorageSendMoney()
   }, [])
 
   const selectStep = (step) => {

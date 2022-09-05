@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Text, View, ActivityIndicator, StyleSheet, SafeAreaView, Image } from 'react-native';
 import { loadRates } from '../../../Actions/RatesActions'
+import { loadBanks } from '../../../Actions/BanksActions';
 import { connect } from 'react-redux';
 import { amountConvert, completDecimal, months } from '../../../Helpers/Herlpers'
 import { Card, Paragraph } from 'react-native-paper';
@@ -12,6 +13,7 @@ function Home(props) {
 
   useEffect(() => {
     props.loadRates()
+    props.loadBanks()
     console.log("Home")
   }, [])
 
@@ -99,10 +101,12 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   rates: state.rates.rates,
+  banks: state.banks.banks
 });
 
 const mapDispatchToProps = dispatch => ({
   loadRates: () => dispatch(loadRates()),
+  loadBanks: () => dispatch(loadBanks()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

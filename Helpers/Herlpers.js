@@ -1,4 +1,6 @@
+import { async } from "@firebase/util";
 import { showMessage } from "react-native-flash-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const flashMessageAction = (message, type) => {
     showMessage({
@@ -56,7 +58,7 @@ export const amountConvert = (data) => {
 
 export const completDecimal = (data) => {
     if (data.toString().includes(".")) {
-        let splitAmount = data.toString().split(".") 
+        let splitAmount = data.toString().split(".")
         if (splitAmount[1].length === 1) {
             return `${splitAmount[0]}${splitAmount[1].padEnd(2, '0')}`
         }
@@ -110,4 +112,27 @@ export const dosDecimales = (n) => {
     let t = n.toString();
     let regex = /(\d*.\d{0,2})/;
     return t.match(regex)[0];
+}
+
+export const saveLocalStorageSendMoney = async (data) => {
+    try {
+        await AsyncStorage.setItem(
+            'sendStepMoney',
+            JSON.stringify(data)
+        );
+    } catch (error) {
+        flashMessageAction('Error guardando los datos', 'warning');
+    }
+}
+
+export const loadLocalStorageSendMoney = async () => {
+    try {
+        const value = await AsyncStorage.getItem('sendStepMoney');
+        if (value !== null) {
+            // We have data!!
+            console.log(value);
+        }
+    } catch (error) {
+        // Error retrieving data
+    }
 }

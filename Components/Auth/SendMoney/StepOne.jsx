@@ -4,26 +4,22 @@ import { Input } from '@rneui/themed';
 import { Picker } from '@react-native-picker/picker';
 import { useSendMoney } from '../../../Hooks/SendMoney'
 import { connect } from 'react-redux';
-import { convertCapitalize, amountConvert, completDecimal, symbolCurrency, dosDecimales } from '../../../Helpers/Herlpers'
+import {
+    convertCapitalize,
+    amountConvert,
+    completDecimal,
+    symbolCurrency,
+    dosDecimales,
+    saveLocalStorageSendMoney
+}
+    from '../../../Helpers/Herlpers'
 
 function StepOne(props) {
     const { state, setState } = useSendMoney();
     //console.log("StepOne ", props.rates)
 
     useEffect(() => {
-        // if (props.rates) {
-        //     Object.keys(props.rates).map((key, index) => {
-        //         if (["dolar", "sol"].includes(key)) {
-        //             console.log(`${key}--${index}--${props.rates[key]}`)
-        //         }
-
-        //     })
-        // }
         console.log("StepOne")
-        setState(prev => ({
-            ...prev,
-            typeCurrency:''
-        }))
     }, [])
 
     const handleChange = (value, input) => {
@@ -39,6 +35,23 @@ function StepOne(props) {
         let rateFloat = parseFloat(rate)
         let total = dosDecimales(rateFloat * amount)
         return amountConvert(completDecimal(total))
+    }
+
+    const stepTwo = () => {
+        console.log("paso")
+        saveLocalStorageSendMoney({
+            steps: {
+                step: 0,
+                typeCurrency: state.typeCurrency,
+                amountSend: state.amountSend,
+                amountReceived: state.amountReceived,
+            }
+        }).then(() => {
+            setState(prev => ({
+                ...prev,
+                currentPosition: 1
+            }))
+        })
     }
 
     return (
@@ -79,9 +92,6 @@ function StepOne(props) {
                             })
                         }
                     </Picker>
-                    {/* <View style={{ marginTop: -7, marginBottom: 5 }}>
-                    <Text style={{ color: 'red', fontSize: 12 }}>{dataForm.type_person_text_error}</Text>
-                </View> */}
                 </View>
                 <View>
                     <View style={{ marginHorizontal: 10 }}>
@@ -95,8 +105,6 @@ function StepOne(props) {
                         keyboardType='numeric'
                         autoCapitalize="none"
                         disabled={state.typeCurrency === '' ? true : false}
-                    // inputContainerStyle={{ borderColor: state.solError }}
-                    // errorMessage={state.solTextError}
                     />
                     {
                         state.typeCurrency ?
@@ -126,7 +134,7 @@ function StepOne(props) {
                     <Button
                         title='Siguiente'
                         disabled={state.typeCurrency !== '' && state.amountSend !== '' ? false : true}
-                    // onPress={updatesRates}
+                        onPress={stepTwo}
                     />
                 </View>
             </View>
