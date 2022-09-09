@@ -7,40 +7,45 @@ import StepOne from './StepOne';
 import StepTwo from './StepTwo';
 import StepThree from './StepThree';
 import { loadLocalStorageSendMoney } from '../../../Helpers/Herlpers'
+import { connect } from 'react-redux';
 
-function SendMoney() {
+function SendMoney(props) {
   const labels = ["Monto a enviar", "Cuenta destino", "Comprobante de pago"];
   const { state, setState } = useSendMoney();
 
   useEffect(() => {
-    console.log("SendMoney")
     loadLocalStorageSendMoney()
   }, [])
 
   const selectStep = (step) => {
     const stepObject = {
       0: <StepOne />,
-      1: <StepTwo />,
+      1: <StepTwo navigation={props.navigation} />,
       2: <StepThree />
     }
     return stepObject[step]
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <Card style={{ paddingTop: 15 }}>
-          <StepIndicator
-            customStyles={customStyles}
-            currentPosition={state.currentPosition}
-            labels={labels}
-            stepCount={3}
-          />
-          <View style={styles.divider}></View>
-          {selectStep(state.currentPosition)}
-        </Card>
-      </ScrollView>
-    </SafeAreaView>
+    (props.rates && props.banks) ?
+      <SafeAreaView style={styles.container}>
+        <ScrollView>
+          <Card style={{ paddingTop: 15 }}>
+            <StepIndicator
+              customStyles={customStyles}
+              currentPosition={state.currentPosition}
+              labels={labels}
+              stepCount={3}
+            />
+            <View style={styles.divider}></View>
+            {selectStep(state.currentPosition)}
+          </Card>
+        </ScrollView>
+      </SafeAreaView>
+      :
+      <View style={styles.viewLoading}>
+        <ActivityIndicator size={80} color='#174ea6' />
+      </View>
   );
 }
 
@@ -86,4 +91,9 @@ const customStyles = {
   currentStepLabelColor: '#007bff'
 }
 
-export default SendMoney;
+const mapStateToProps = state => ({
+  rates: state.rates.rates,
+  banks: state.banks.banks
+});
+
+export default connect(mapStateToProps, null)(SendMoney);

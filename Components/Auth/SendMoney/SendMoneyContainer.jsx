@@ -1,15 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { SendMoneyProvider } from '../../../Hooks/SendMoney'
+import React, { useEffect } from 'react';
 import SendMoney from './SendMoney';
 
-function SendMoneyContainer() {
-    useEffect(() => {
-        console.log("SendMoneyContainer")
-    }, [])
+function SendMoneyContainer(props) {
+    const { navigation, route } = props;
+    
     return (
-        <SendMoneyProvider>
-            <SendMoney />
-        </SendMoneyProvider>
+        <SendMoney navigation={navigation} />
     );
 }
 

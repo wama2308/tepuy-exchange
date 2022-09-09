@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeStackScreen from './HomeStackScreen';
-import SendMoneyContainer from './SendMoney/SendMoneyContainer';
+import SendMoneyStackScreen from './SendMoneyStackScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import UserStackScreen from './UserStackScreen';
 
@@ -12,9 +12,9 @@ const options = (route) => {
             icon: 'home-outline',
             headerShown: false
         },
-        Enviar: {
+        StackEnviar: {
             icon: 'cash-outline',
-            headerShown: true
+            headerShown: false
         },
         StackAccount: {
             icon: 'person',
@@ -38,8 +38,8 @@ function RouteAuth(props) {
             })}>
             <Tab.Screen name="StackHome" component={HomeStackScreen} options={{ title: 'Home' }} />
             <Tab.Screen
-                name="Enviar"
-                component={SendMoneyContainer}
+                name="StackEnviar"
+                component={SendMoneyStackScreen}
                 listeners={{
                     tabPress: e => {
                         // Prevent default action
@@ -52,6 +52,7 @@ function RouteAuth(props) {
                 component={UserStackScreen}
                 initialParams={{ logoutAction: props.logoutAction }}
                 options={{ title: 'Cuenta' }}
+                
             />
         </Tab.Navigator>
     );
