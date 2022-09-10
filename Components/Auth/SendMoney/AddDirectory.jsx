@@ -15,7 +15,7 @@ function AddDirectory(props) {
             <SafeAreaView style={styles.container}>
                 <ScrollView>
                     <Card style={{ paddingVertical: 10 }}>
-                        <FormAddDirectory banks={props.banks} />
+                        <FormAddDirectory banks={props.banks} navigation={navigation} />
                     </Card>
                 </ScrollView>
             </SafeAreaView>
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         flex: 1,
         marginHorizontal: 10,
         marginVertical: 20,
-    },    
+    },
 });
 
 const mapStateToProps = state => ({
