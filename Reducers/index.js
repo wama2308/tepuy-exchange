@@ -2,14 +2,14 @@ import { combineReducers } from "redux";
 import UsersReducer from "../Reducers/UsersReducer";
 import RatesReducer from "../Reducers/RatesReducers";
 import BanksReducer from "./BanksReducer";
-// import PurchasesReducer from "../Reducers/PurchasesReducer";
+import DirectoryReducers from "../Reducers/DirectoryReducers";
 // import SeekerReducer from "../Reducers/SeekerReducer";
 
 const reducers = combineReducers({
     users: UsersReducer,
     rates: RatesReducer,
     banks: BanksReducer,
-    //   purchases: PurchasesReducer,
+    directory: DirectoryReducers,
     //   seeker: SeekerReducer,
 });
 

@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Button } from 'react-native';
 import { Input } from '@rneui/themed';
 import { Picker } from '@react-native-picker/picker';
 import { useSendMoney } from '../../../Hooks/SendMoney'
+import { setStep } from '../../../Actions/DirectoryActions'
 import { connect } from 'react-redux';
 import {
     convertCapitalize,
@@ -76,10 +77,11 @@ function StepOne(props) {
                     amountReceived: state.amountReceived,
                 }
             }).then(() => {
-                setState(prev => ({
-                    ...prev,
-                    currentPosition: 1
-                }))
+                // setState(prev => ({
+                //     ...prev,
+                //     currentPosition: 1
+                // }))
+                props.setStep(1)
             })
         }
     }
@@ -202,4 +204,8 @@ const mapStateToProps = state => ({
     rates: state.rates.rates,
 });
 
-export default connect(mapStateToProps, null)(StepOne);
+const mapDispatchToProps = dispatch => ({
+    setStep: (data) => dispatch(setStep(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(StepOne);

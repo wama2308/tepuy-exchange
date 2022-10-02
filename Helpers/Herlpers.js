@@ -130,7 +130,7 @@ export const loadLocalStorageSendMoney = async () => {
         const value = await AsyncStorage.getItem('sendStepMoney');
         if (value !== null) {
             // We have data!!
-            console.log(value);
+            //console.log(value);
         }
     } catch (error) {
         // Error retrieving data

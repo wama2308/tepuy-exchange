@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 function StepTwo(props) {    
     const { navigation } = props;
     useEffect(() => {
-        console.log("StepTwo ", props)
+        //console.log("StepTwo ", props)
 
     }, [])
 

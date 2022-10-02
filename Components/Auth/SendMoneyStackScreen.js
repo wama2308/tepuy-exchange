@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Button } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SendMoneyContainer from './SendMoney/SendMoneyContainer';
 import Directory from './Directory/Directory';
 import AddDirectory from './SendMoney/AddDirectory';
 import { searchTypeUser } from '../../Actions/UsersActions'
+import { setStep } from '../../Actions/DirectoryActions'
 import { SendMoneyProvider } from '../../Hooks/SendMoney';
+import { AntDesign } from '@expo/vector-icons';
+
 import { connect } from 'react-redux';
 
 const SenMoneyStack = createNativeStackNavigator();
@@ -19,10 +22,25 @@ function SendMoneyStackScreen(props) {
 
   const { navigation, route } = props;
   const { params } = route
+  
   return (
     <SendMoneyProvider>
       <SenMoneyStack.Navigator>
-        <SenMoneyStack.Screen name="Enviar" component={SendMoneyContainer} />
+        <SenMoneyStack.Screen
+          name="Enviar"
+          component={SendMoneyContainer}
+          options={{
+            headerLeft: () => (
+              <AntDesign
+                name="arrowleft"
+                size={25}
+                color="black"
+                style={{ marginRight: 10 }}
+                onPress={() => props.setStep(props.step - 1)}
+              />
+            ),
+          }}
+        />
         <SenMoneyStack.Screen name="Directorio" component={Directory} />
         <SenMoneyStack.Screen name="AddBeneficiario" component={AddDirectory} options={{ title: 'Nuevo beneficiario' }} />
       </SenMoneyStack.Navigator>
@@ -38,8 +56,13 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapDispatchToProps = dispatch => ({
-  searchTypeUser: () => dispatch(searchTypeUser()),
+const mapStateToProps = state => ({
+  step: state.directory.step,
 });
 
-export default connect(null, mapDispatchToProps)(SendMoneyStackScreen);
+const mapDispatchToProps = dispatch => ({
+  searchTypeUser: () => dispatch(searchTypeUser()),
+  setStep: (data) => dispatch(setStep(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SendMoneyStackScreen);

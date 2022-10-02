@@ -66,6 +66,7 @@ function FormAddDirectory(props) {
                 loading: true
             }))
             registerFireBaseDirectory({
+                bank: state.bank,
                 accountNumber: state.accountNumber,
                 headline: state.headline,
                 codeDni: state.codeDni,
@@ -86,7 +87,7 @@ function FormAddDirectory(props) {
                         codePhone: '0412',
                         phone: ''
                     }))
-                    props.navigation.goBack()
+                    //props.navigation.goBack()
                 })
                 .catch(() => {
                     flashMessageAction('Error registrando el beneficiario', 'warning');
@@ -97,7 +98,7 @@ function FormAddDirectory(props) {
                 })
         }
     }
-    console.log("aqui ", state)
+    
     return (
         !state.loading ?
             <View>

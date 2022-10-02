@@ -53,7 +53,7 @@ export const loginAction = (data) => dispatch => {
     signInWithEmailAndPassword(auth, data.email, data.password)
         .then((userCredential) => {
             const user = userCredential.user;
-            console.log("user ", user)
+            //console.log("user ", user)
             if (user && user.emailVerified) {
                 dispatch({
                     type: "CHECK_CONNECTION",

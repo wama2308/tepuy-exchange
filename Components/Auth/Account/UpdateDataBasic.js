@@ -104,7 +104,7 @@ function UpdateDataBasic(props) {
                 })
         }
     }
-    console.log("props.users.type_user ", props.users.type_user)
+    
     return (
         !dataForm.loading ?
             <ScrollView style={styles.container}>

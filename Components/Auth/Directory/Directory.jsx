@@ -1,18 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableHighlight, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableHighlight, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
 import { Searchbar } from 'react-native-paper';
-
+import { loadDirectory, deleteDirectory, searchDirectory } from '../../../Actions/DirectoryActions'
+import CardList from './CardList';
+import { connect } from 'react-redux';
 
 function Directory(props) {
-    const { navigation, route } = props;
+    const { navigation, route, banks } = props;
+    const [loading, setLoading] = useState(true)
+
     useEffect(() => {
-        console.log("Directory")
+        props.loadDirectory()
+            .then(() => setLoading(false))
+            .catch(() => setLoading(false))
     }, [])
     const [searchQuery, setSearchQuery] = React.useState('');
 
-    const onChangeSearch = query => setSearchQuery(query);
-    return (
+    const onChangeSearch = query => {
+        setSearchQuery(query)
+        props.searchDirectory(query)
+    };
 
+    const renderSeparator = () => (
+        <View
+            style={{ height: 1 }}
+        />
+    );
+
+    //console.log("onChangeSearch ", props.directory)
+    return (
         <View style={styles.container}>
             <View style={{ flex: 1 }}>
                 <Searchbar
@@ -21,19 +37,31 @@ function Directory(props) {
                     value={searchQuery}
                 />
             </View>
-            <View style={{ flex: 10 }}>
-                <ScrollView>
-                    <Text style={{ color: 'red', fontSize: 100 }}>wama</Text>
-                    <Text style={{ color: 'red', fontSize: 100 }}>wama</Text>
-                    <Text style={{ color: 'red', fontSize: 100 }}>wama</Text>
-                    <Text style={{ color: 'red', fontSize: 100 }}>wama</Text>
-                    <Text style={{ color: 'red', fontSize: 100 }}>wama</Text>
-                    <Text style={{ color: 'red', fontSize: 100 }}>wama</Text>
-                    <Text style={{ color: 'red', fontSize: 100 }}>wama</Text>
-                    <Text style={{ color: 'red', fontSize: 100 }}>wama</Text>
-                    <Text style={{ color: 'red', fontSize: 100 }}>wama</Text>
-                    <Text style={{ color: 'red', fontSize: 100 }}>wamaR</Text>
-                </ScrollView>
+            <View style={{ flex: 10, marginVertical: 20 }}>
+                {
+                    !loading ?
+                        <FlatList
+                            data={props.directory}
+                            renderItem={({ item, index }) =>
+                                <CardList
+                                    item={item}
+                                    index={index}
+                                    banks={banks}
+                                    deleteDirectory={deleteDirectory}
+                                    setLoading={setLoading}
+                                    navigation={navigation}
+                                />
+                            }
+
+                            keyExtractor={item => item.created_at}
+                            ItemSeparatorComponent={renderSeparator}
+
+                        />
+                        :
+                        <View style={styles.viewLoading}>
+                            <ActivityIndicator size={80} color='#007bff' />
+                        </View>
+                }
             </View>
             <TouchableHighlight onPress={() => navigation.navigate("AddBeneficiario")}>
                 <View style={styles.buttonFloat} >
@@ -57,8 +85,8 @@ const styles = StyleSheet.create({
         flex: 1,
         borderRadius: 50,
         backgroundColor: '#007bff',
-        width: 60,
-        height: 60,
+        width: 70,
+        height: 70,
         justifyContent: 'center',
         alignItems: 'center',
         position: 'absolute',
@@ -72,4 +100,14 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Directory;
+const mapStateToProps = state => ({
+    banks: state.banks.banks,
+    directory: state.directory.directory,
+});
+
+const mapDispatchToProps = dispatch => ({
+    loadDirectory: () => dispatch(loadDirectory()),
+    searchDirectory: (data) => dispatch(searchDirectory(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Directory);

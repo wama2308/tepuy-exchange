@@ -9,8 +9,7 @@ export const loadBanks = () => dispatch => {
     return new Promise((resolve, reject) => {
         const rates = ref(database, `banks`);
         onValue(rates, (snapshot) => {
-            const data = snapshot.val();
-            console.log("loadBanks action ", data)
+            const data = snapshot.val();            
             if (Object.keys(data).length) {
                 dispatch({
                     type: "LOAD_BANKS",

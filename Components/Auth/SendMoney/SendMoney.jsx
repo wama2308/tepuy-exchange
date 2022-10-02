@@ -33,12 +33,12 @@ function SendMoney(props) {
           <Card style={{ paddingTop: 15 }}>
             <StepIndicator
               customStyles={customStyles}
-              currentPosition={state.currentPosition}
+              currentPosition={props.step}
               labels={labels}
               stepCount={3}
             />
             <View style={styles.divider}></View>
-            {selectStep(state.currentPosition)}
+            {selectStep(props.step)}
           </Card>
         </ScrollView>
       </SafeAreaView>
@@ -93,7 +93,8 @@ const customStyles = {
 
 const mapStateToProps = state => ({
   rates: state.rates.rates,
-  banks: state.banks.banks
+  banks: state.banks.banks,
+  step: state.directory.step,
 });
 
 export default connect(mapStateToProps, null)(SendMoney);

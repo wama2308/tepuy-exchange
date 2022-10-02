@@ -36,23 +36,21 @@ function RouteAuth(props) {
                 tabBarInactiveTintColor: 'gray',
                 headerShown: options(route.name).headerShown,
             })}>
-            <Tab.Screen name="StackHome" component={HomeStackScreen} options={{ title: 'Home' }} />
+            <Tab.Screen
+                name="StackHome"
+                component={HomeStackScreen}
+                options={{ title: 'Home', unmountOnBlur: true }}
+            />
             <Tab.Screen
                 name="StackEnviar"
                 component={SendMoneyStackScreen}
-                listeners={{
-                    tabPress: e => {
-                        // Prevent default action
-                        console.log("aquica")
-                        //e.preventDefault();
-                    },
-                }} />
+                options={{ title: 'Enviar', unmountOnBlur: true }}
+            />
             <Tab.Screen
                 name="StackAccount"
                 component={UserStackScreen}
                 initialParams={{ logoutAction: props.logoutAction }}
-                options={{ title: 'Cuenta' }}
-                
+                options={{ title: 'Cuenta', unmountOnBlur: true }}
             />
         </Tab.Navigator>
     );
