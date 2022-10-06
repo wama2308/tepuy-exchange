@@ -35,6 +35,7 @@ function CardList(props) {
     const loadHeadline = (item) => {
         setState({
             ...state,
+            id: item.id,
             bank: item.bank,
             accountNumber: item.accountNumber,
             headline: item.headline,

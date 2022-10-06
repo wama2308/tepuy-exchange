@@ -6,6 +6,8 @@ export const registerFireBaseDirectory = (data) => {
     return new Promise((resolve, reject) => {
         const postListRef = ref(database, `directory/${auth.currentUser.uid}`);
         const newPostRef = push(postListRef);
+        const keyHeadline = newPostRef.key;
+
         set(newPostRef, {
             bank: data.bank,
             accountNumber: data.accountNumber,
@@ -14,13 +16,15 @@ export const registerFireBaseDirectory = (data) => {
             dni: data.dni,
             codePhone: data.codePhone,
             phone: data.phone,
-            active: true,
+            active: data.active,
             created_at: dateNow(),
             created_by: auth.currentUser.uid,
             updated_at: dateNow(),
             updated_by: auth.currentUser.uid,
         })
-            .then(() => resolve())
+            .then(() => {                
+                resolve(keyHeadline)
+            })
             .catch(() => reject());
     })
 }

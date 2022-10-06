@@ -15,7 +15,7 @@ function AddDirectory(props) {
             <SafeAreaView style={styles.container}>
                 <ScrollView>
                     <Card style={{ paddingVertical: 10 }}>
-                        <FormAddDirectory banks={props.banks} navigation={navigation} />
+                        <FormAddDirectory banks={props.banks} navigation={navigation} directory={true} />
                     </Card>
                 </ScrollView>
             </SafeAreaView>

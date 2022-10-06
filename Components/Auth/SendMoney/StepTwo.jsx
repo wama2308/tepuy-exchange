@@ -21,7 +21,7 @@ function StepTwo(props) {
                     onPress={() => { props.navigation.navigate('Directorio') }}
                 />
             </View>
-            <FormAddDirectory banks={props.banks} />
+            <FormAddDirectory banks={props.banks} directory={false} />
 
         </View>
     );

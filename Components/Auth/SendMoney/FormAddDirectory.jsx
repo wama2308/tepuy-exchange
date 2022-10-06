@@ -1,13 +1,16 @@
 import React from 'react';
-import { View, StyleSheet, Button, Text, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Button, Text, ActivityIndicator, Alert } from 'react-native';
 import { Input } from '@rneui/themed';
 import { Picker } from '@react-native-picker/picker';
 import { useSendMoney } from '../../../Hooks/SendMoney'
 import { registerFireBaseDirectory } from '../../../Actions/DirectoryActions'
 import { flashMessageAction } from '../../../Helpers/Herlpers'
+import { connect } from 'react-redux';
+import { setStep } from '../../../Actions/DirectoryActions'
 
 function FormAddDirectory(props) {
     const { state, setState } = useSendMoney();
+    const { navigation } = props;
 
     const validate = () => {
         let acum = "";
@@ -57,24 +60,24 @@ function FormAddDirectory(props) {
         return true;
     }
 
-    const saveDirectoryAction = e => {
-        e.preventDefault();
-        const isValid = validate();
-        if (isValid) {
-            setState(prev => ({
-                ...prev,
-                loading: true
-            }))
-            registerFireBaseDirectory({
-                bank: state.bank,
-                accountNumber: state.accountNumber,
-                headline: state.headline,
-                codeDni: state.codeDni,
-                dni: state.dni,
-                codePhone: state.codePhone,
-                phone: state.phone,
-            })
-                .then(() => {
+    const registerDirectoryFirebase = (active) => {
+        setState(prev => ({
+            ...prev,
+            loading: true
+        }))
+
+        registerFireBaseDirectory({
+            bank: state.bank,
+            accountNumber: state.accountNumber,
+            headline: state.headline,
+            codeDni: state.codeDni,
+            dni: state.dni,
+            codePhone: state.codePhone,
+            phone: state.phone,
+            active: active
+        })
+            .then((key) => {
+                if (props.directory) {
                     flashMessageAction('Beneficiario registrado con éxito', 'success');
                     setState(prev => ({
                         ...prev,
@@ -87,17 +90,71 @@ function FormAddDirectory(props) {
                         codePhone: '0412',
                         phone: ''
                     }))
-                    //props.navigation.goBack()
-                })
-                .catch(() => {
+                    navigation.goBack()
+                } else {
+                    if (active) {
+                        flashMessageAction('Beneficiario registrado con éxito', 'success');
+                    }
+                    setState(prev => ({
+                        ...prev,
+                        loading: false,
+                        id: key
+                    }))
+                    props.setStep(2)
+                }
+            })
+            .catch(() => {
+                if (props.directory) {
                     flashMessageAction('Error registrando el beneficiario', 'warning');
                     setState(prev => ({
                         ...prev,
                         loading: false
                     }))
-                })
+                } else {
+                    flashMessageAction('Error en el paso dos', 'warning');
+                    setState(prev => ({
+                        ...prev,
+                        loading: false
+                    }))
+                }
+            })
+    }
+
+    const saveDirectoryAction = e => {
+        e.preventDefault();
+        const isValid = validate();
+        if (isValid) {
+            if (!props.directory && !state.id) {
+                Alert.alert("Guardar beneficiario",
+                    "¿Desea el beneficiario en su directorio?",
+                    [
+                        {
+                            text: "No",
+                            style: "cancel",
+                            onPress: () => {
+                                registerDirectoryFirebase(false)
+                            }
+                        },
+                        {
+                            text: "Si",
+                            onPress: () => {
+                                registerDirectoryFirebase(true)
+                            }
+                        }
+                    ],
+                    { cancelable: false }
+                );
+
+            }
+            if (!props.directory && state.id) {
+                props.setStep(2)
+            }
+            if (props.directory) {
+                registerDirectoryFirebase(true)
+            }
         }
     }
+    console.log("form directory ", state)
     
     return (
         !state.loading ?
@@ -113,6 +170,7 @@ function FormAddDirectory(props) {
                             setState(prev => ({
                                 ...prev,
                                 bank: itemValue,
+                                accountNumber:props.banks[itemValue].code,
                                 errorBank: 'black',
                                 textErrorBank: ''
                             }))
@@ -251,7 +309,7 @@ function FormAddDirectory(props) {
                 </View>
                 <View style={{ marginVertical: 10, marginHorizontal: 10 }}>
                     <Button
-                        title='Guardar'
+                        title={props.directory ? 'Guardar' : 'Siguiente'}
                         // disabled={state.typeCurrency !== '' && state.amountSend !== '' ? false : true}
                         onPress={saveDirectoryAction}
                     />
@@ -288,4 +346,8 @@ const styles = StyleSheet.create({
 });
 
 
-export default FormAddDirectory;
+const mapDispatchToProps = dispatch => ({
+    setStep: (data) => dispatch(setStep(data)),
+});
+
+export default connect(null, mapDispatchToProps)(FormAddDirectory);

@@ -4,6 +4,7 @@ const SendMoneyContext = React.createContext();
 
 export function SendMoneyProvider(props) {
     const [state, setState] = useState({
+        id: '',
         currentPosition: 1,
         loading: false,
         typeCurrency: '',
@@ -22,16 +23,16 @@ export function SendMoneyProvider(props) {
         errorAccountNumber: '',
         textErrorAccountNumber: '',
         headline: '',
-        errorHeadLine:'',
-        textErrorHeadLine:'',
+        errorHeadLine: '',
+        textErrorHeadLine: '',
         codeDni: 'V',
         dni: '',
-        errorDni:'',
-        textErrorDni:'',
+        errorDni: '',
+        textErrorDni: '',
         codePhone: '0412',
         phone: '',
-        errorPhone:'',
-        textErrorPhone:'',
+        errorPhone: '',
+        textErrorPhone: '',
     });
 
 

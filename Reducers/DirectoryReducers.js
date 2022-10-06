@@ -1,7 +1,7 @@
 const InitalState = {
     directoryAll: null,
     directory: null,
-    step: 1
+    step: 0
 }
 
 const DirectoryReducers = (state = InitalState, action) => {

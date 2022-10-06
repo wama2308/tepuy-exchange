@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableHighlight, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { loadDirectory, deleteDirectory, searchDirectory } from '../../../Actions/DirectoryActions'
 import CardList from './CardList';
 import { connect } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
 
 function Directory(props) {
     const { navigation, route, banks } = props;
@@ -63,11 +64,9 @@ function Directory(props) {
                         </View>
                 }
             </View>
-            <TouchableHighlight onPress={() => navigation.navigate("AddBeneficiario")}>
-                <View style={styles.buttonFloat} >
-                    <Text style={{ color: '#fff', fontSize: 25 }}>+</Text>
-                </View>
-            </TouchableHighlight>
+            <TouchableOpacity onPress={() => navigation.navigate("AddBeneficiario")} style={styles.buttonFloat}>
+                <Ionicons name="add-outline" size={30} color="white" />
+            </TouchableOpacity>
         </View>
 
 

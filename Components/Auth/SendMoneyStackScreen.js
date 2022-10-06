@@ -17,12 +17,12 @@ function SendMoneyStackScreen(props) {
   const [typeUser, setTypeUser] = useState(null)
 
   useEffect(() => {
-    props.searchTypeUser().then((res) => setTypeUser(res))
+    props.searchTypeUser().then((res) => setTypeUser(res))    
   }, [])
 
   const { navigation, route } = props;
   const { params } = route
-  
+
   return (
     <SendMoneyProvider>
       <SenMoneyStack.Navigator>
@@ -31,13 +31,16 @@ function SendMoneyStackScreen(props) {
           component={SendMoneyContainer}
           options={{
             headerLeft: () => (
-              <AntDesign
-                name="arrowleft"
-                size={25}
-                color="black"
-                style={{ marginRight: 10 }}
-                onPress={() => props.setStep(props.step - 1)}
-              />
+              props.step > 0 ?
+                <AntDesign
+                  name="arrowleft"
+                  size={25}
+                  color="black"
+                  style={{ marginRight: 10 }}
+                  onPress={() => props.setStep(props.step - 1)}
+                />
+                :
+                null
             ),
           }}
         />

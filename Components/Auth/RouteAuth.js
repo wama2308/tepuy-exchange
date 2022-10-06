@@ -3,6 +3,9 @@ import HomeStackScreen from './HomeStackScreen';
 import SendMoneyStackScreen from './SendMoneyStackScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import UserStackScreen from './UserStackScreen';
+import { connect } from 'react-redux';
+import { setStep } from '../../Actions/DirectoryActions'
+
 
 const Tab = createBottomTabNavigator();
 
@@ -45,6 +48,13 @@ function RouteAuth(props) {
                 name="StackEnviar"
                 component={SendMoneyStackScreen}
                 options={{ title: 'Enviar', unmountOnBlur: true }}
+                listeners={({ navigation, route }) => ({
+                    tabPress: (e) => {                        
+                        e.preventDefault();
+                        props.setStep(0)
+                        navigation.navigate('StackEnviar');
+                    },
+                })}
             />
             <Tab.Screen
                 name="StackAccount"
@@ -56,4 +66,7 @@ function RouteAuth(props) {
     );
 }
 
-export default RouteAuth;
+const mapDispatchToProps = dispatch => ({
+    setStep: (data) => dispatch(setStep(data)),
+});
+export default connect(null, mapDispatchToProps)(RouteAuth);
